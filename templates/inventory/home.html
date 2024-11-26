@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зелений хрест</title>
+    <link rel="stylesheet" href="{% static 'styles/home.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Верхня частина з заголовком */
+        .header {
+            background-color: #3a8d5e;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .header .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* Горизонтальне меню */
+        .navbar {
+            background-color: #316d4e;
+            padding: 10px 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .navbar .menu {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 20px; /* Відстань між кнопками */
+        }
+
+        .navbar .menu li {
+            margin: 0;
+        }
+
+        .navbar .menu li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 25px;
+            border-radius: 6px; /* Менше заокруглення */
+            background-color: #3a8d5e;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Легка тінь */
+        }
+
+        .navbar .menu li a:hover {
+            background-color: #2c5b3e; /* Темніший відтінок */
+            transform: translateY(-2px);
+        }
+
+        .navbar .menu li a:focus {
+            outline: none;
+        }
+
+        /* Основний вміст */
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: #3a8d5e;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Таблиця з останніми змінами */
+        .changes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .changes-table th,
+        .changes-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .changes-table th {
+            background-color: #3a8d5e;
+            color: white;
+        }
+
+        .changes-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .changes-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .changes-table td {
+            color: #555;
+        }
+
+        .changes-table td[colspan="4"] {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Верхня частина з заголовком -->
+<header class="header">
+    <h1 class="title">Зелений хрест</h1>
+</header>
+
+<!-- Горизонтальне меню -->
+<nav class="navbar">
+    <ul class="menu">
+        <li><a href="{% url 'manage_medicines' %}">Медичні препарати</a></li>
+        <li><a href="{% url 'manage_equipment' %}">Обладнання</a></li>
+        <li><a href="{% url 'pharmacy_info' %}">Інформація про аптеку</a></li>
+    </ul>
+</nav>
+
+<!-- Таблиця з останніми змінами -->
+<main class="content">
+    <h2>Останні зміни</h2>
+    <table class="changes-table">
+        <thead>
+        <tr>
+            <th>Назва</th>
+            <th>Категорія</th>
+            <th>Кількість</th>
+            <th>Строк придатності</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in medicines %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.expiry_date }}</td>
+
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">Змін поки немає</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

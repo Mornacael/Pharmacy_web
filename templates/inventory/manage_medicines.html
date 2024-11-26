@@ -1,0 +1,33 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Manage Medicines{% endblock %}
+
+{% block content %}
+<h2>Manage Medicines</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for medicine in medicines %}
+        <tr>
+            <td>{{ medicine.name }}</td>
+            <td>{{ medicine.quantity }}</td>
+            <td>
+                <a href="{% url 'edit_medicine' medicine.pk %}">Edit</a> |
+                <a href="{% url 'delete_medicine' medicine.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No medicines found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'add_medicine' %}" class="btn">Add Medicine</a>
+{% endblock %}

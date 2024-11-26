@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Register</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #3a8d5e;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-switch {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-switch button {
+            background-color: #3a8d5e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .form-switch button:hover {
+            background-color: #316d4e;
+        }
+
+        .form-switch button:focus {
+            outline: none;
+        }
+
+        .form-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .form-content button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3a8d5e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-content button:hover {
+            background-color: #316d4e;
+        }
+
+        .form-content input:focus {
+            outline: none;
+            border-color: #3a8d5e;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .form-content input::placeholder {
+            color: #aaa;
+        }
+
+        .form-switch button.active {
+            background-color: #316d4e;
+        }
+    </style>
+</head>
+<body>
+    <h2>Зелений хрест</h2>
+    <div class="container">
+        <div class="form-switch">
+            <button id="login-tab" class="active" onclick="showForm('login')">Login</button>
+            <button id="register-tab" onclick="showForm('register')">Register</button>
+        </div>
+
+        <div id="login-form" class="form-content active">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="login" value="true">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <div id="register-form" class="form-content">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="register" value="true">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showForm(type) {
+            // Toggle between forms
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('register-form').classList.remove('active');
+            document.getElementById(type + '-form').classList.add('active');
+
+            // Switch active tab styles
+            document.getElementById('login-tab').classList.remove('active');
+            document.getElementById('register-tab').classList.remove('active');
+            document.getElementById(type + '-tab').classList.add('active');
+        }
+    </script>
+</body>
+</html>

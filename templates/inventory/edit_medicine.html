@@ -1,0 +1,13 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Edit Medicine{% endblock %}
+
+{% block content %}
+<h2>Edit Medicine</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Update</button>
+</form>
+<a href="{% url 'manage_medicines' %}" class="btn-secondary">Cancel</a>
+{% endblock %}
