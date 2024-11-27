@@ -51,9 +51,9 @@ def home_view(request):
     medicines = Medicine.objects.filter(user=request.user)
     # latest_changes = [
 
-        # {'name': 'Анальгін', 'category': 'Препарат', 'updated_at': '2024-11-20', 'action': 'Додано'},
-        # {'name': 'Парацетамол', 'category': 'Препарат', 'updated_at': '2024-11-22', 'action': 'Оновлено'},
-        # {'name': 'Стерилізатор', 'category': 'Обладнання', 'updated_at': '2024-11-24', 'action': 'Оновлено'},
+    # {'name': 'Анальгін', 'category': 'Препарат', 'updated_at': '2024-11-20', 'action': 'Додано'},
+    # {'name': 'Парацетамол', 'category': 'Препарат', 'updated_at': '2024-11-22', 'action': 'Оновлено'},
+    # {'name': 'Стерилізатор', 'category': 'Обладнання', 'updated_at': '2024-11-24', 'action': 'Оновлено'},
     # ]
     return render(request, 'inventory/home.html', {'medicines': medicines})
 
@@ -64,89 +64,105 @@ def pharmacy_info(request):
 
 def admin_or_pharmacy_employee(view_func):
     """Кастомний декоратор для перевірки доступу."""
+
     def wrapper(request, *args, **kwargs):
         if request.user.is_superuser or hasattr(request.user, 'pharmacy'):
             return view_func(request, *args, **kwargs)
         return HttpResponseForbidden("Access denied")
+
     return wrapper
 
 
 @login_required(login_url='login_register')
-#@admin_or_pharmacy_employee
+# @admin_or_pharmacy_employee
 def manage_medicines(request):
     medicines = Medicine.objects.filter(user=request.user)
-    return render(request, 'inventory/manage_medicines.html', {'medicines': medicines})
+    return render(request, 'inventory/manage_medicines.html', {'medicines': medicines, 'action': manage_medicines})
 
 
 # @admin_or_pharmacy_employee
-@login_required(login_url='login_register')
-def add_medicine(request):
-    if request.method == 'POST':
-        form = MedicineForm(request.POST)
-        if form.is_valid():
-            medicine = form.save(commit=False)  # Не зберігаємо поки
-            if request.user.pharmacy:  # Прив'язуємо до аптеки користувача
-                medicine.pharmacy = request.user.pharmacy
-            else:
-                return HttpResponseForbidden("You do not belong to any pharmacy.")
-            medicine.save()  # Тепер зберігаємо з усіма полями
-            return redirect('manage_medicines')
-    else:
-        form = MedicineForm()
-    return render(request, 'inventory/add_medicine.html', {'form': form})
+# @login_required(login_url='login_register')
+# def add_medicine(request):
+#     if request.method == 'POST':
+#         form = MedicineForm(request.POST)
+#         if form.is_valid():
+#             medicine = form.save(commit=False)
+#             if request.user.pharmacy:
+#                 medicine.pharmacy = request.user.pharmacy
+#             else:
+#                 return HttpResponseForbidden("You do not belong to any pharmacy.")
+#             medicine.save()
+#             return redirect('manage_medicines')
+#     else:
+#         form = MedicineForm()
+#     return render(request, 'inventory/manage_medicines.html', {'form': form, 'action': 'add'})
 
 
 @login_required(login_url='login_register')
 # @admin_or_pharmacy_employee
-def edit_medicine(request, pk):
-    medicine = get_object_or_404(Medicine, pk=pk, pharmacy=request.user.pharmacy)
-    if request.method == 'POST':
-        form = MedicineForm(request.POST, instance=medicine)
-        if form.is_valid():
-            form.save()
-            return redirect('manage_medicines')
-    else:
-        form = MedicineForm(instance=medicine)
-    return render(request, 'inventory/edit_medicine.html', {'form': form})
+def delete_medicine(request, pk):
+    medicine = get_object_or_404(Medicine, pk=pk, user=request.user)
+    medicine.delete()
+    return redirect('manage_medicines')
 
 
 @login_required(login_url='login_register')
 # @admin_or_pharmacy_employee
 def manage_equipment(request):
-    equipment = Equipment.objects.filter(pharmacy=request.user.pharmacy)
-    return render(request, 'inventory/manage_equipment.html', {'equipment': equipment})
+    equipment = Equipment.objects.filter(user=request.user)
+    return render(request, 'inventory/manage_equipment.html', {'equipments': equipment})
+
+
+# @login_required(login_url='login_register')
+# # @admin_or_pharmacy_employee
+# def edit_medicine(request, pk):
+#     medicine = get_object_or_404(Medicine, pk=pk, user=request.user)
+#     if request.method == 'POST':
+#         form = MedicineForm(request.POST, instance=medicine)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('manage_medicines')
+#     else:
+#         form = MedicineForm(instance=medicine)
+#     return render(request, 'inventory/manage_medicines.html', {'form': form, 'action': 'edit', 'medicine': medicine})
+
+
+# @login_required(login_url='login_register')
+# # @admin_or_pharmacy_employee
+# def add_equipment(request):
+#     if request.method == 'POST':
+#         form = EquipmentForm(request.POST)
+#         if form.is_valid():
+#             equipment = form.save(commit=False)
+#             equipment.pharmacy = request.user
+#             equipment.save()
+#             return redirect('manage_equipment')
+#     else:
+#         form = EquipmentForm()
+#     return render(request, 'inventory/manage_equipment.html', {'form': form})
+
+
+# @login_required(login_url='login_register')
+# # @admin_or_pharmacy_employee
+# def edit_equipment(request, pk):
+#     equipment = get_object_or_404(Equipment, pk=pk, pharmacy=request.user)
+#     if request.method == 'POST':
+#         form = EquipmentForm(request.POST, instance=equipment)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('manage_equipment')
+#     else:
+#         form = EquipmentForm(instance=equipment)
+#     return render(request, 'inventory/manage_equipment.html', {'form': form})
 
 
 @login_required(login_url='login_register')
-# @admin_or_pharmacy_employee
-def add_equipment(request):
-    if request.method == 'POST':
-        form = EquipmentForm(request.POST)
-        if form.is_valid():
-            equipment = form.save(commit=False)
-            equipment.pharmacy = request.user.pharmacy
-            equipment.save()
-            return redirect('manage_equipment')
-    else:
-        form = EquipmentForm()
-    return render(request, 'inventory/add_equipment.html', {'form': form})
+def delete_equipment(request, pk):
+    equipment = get_object_or_404(Equipment, pk=pk, user=request.user)
+    equipment.delete()
+    messages.success(request, "Обладнання успішно видалено.")
+    return redirect('manage_equipment')
 
 
-@login_required(login_url='login_register')
-# @admin_or_pharmacy_employee
-def edit_equipment(request, pk):
-    equipment = get_object_or_404(Equipment, pk=pk, pharmacy=request.user.pharmacy)
-    if request.method == 'POST':
-        form = EquipmentForm(request.POST, instance=equipment)
-        if form.is_valid():
-            form.save()
-            return redirect('manage_equipment')
-    else:
-        form = EquipmentForm(instance=equipment)
-    return render(request, 'inventory/edit_equipment.html', {'form': form})
-
-
-#def index(request):
+# def index(request):
 #   return HttpResponse("Hello, world. You're at the polls index.")
-
-

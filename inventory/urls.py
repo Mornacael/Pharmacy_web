@@ -11,9 +11,12 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     #path('register/', views.register, name='register'),
     path('medicines/', views.manage_medicines, name='manage_medicines'),
-    path('medicines/add/', views.add_medicine, name='add_medicine'),
-    path('medicines/edit/<int:pk>/', views.edit_medicine, name='edit_medicine'),
+    # path('medicines/add/', views.add_medicine, name='add_medicine'),
+    # path('medicines/edit/<int:pk>/', views.edit_medicine, name='edit_medicine'),
+    path('medicines/delete/<int:pk>/', views.delete_medicine, name='delete_medicine'),
+
     path('equipment/', views.manage_equipment, name='manage_equipment'),
-    path('equipment/add/', views.add_equipment, name='add_equipment'),
-    path('equipment/edit/<int:pk>/', views.edit_equipment, name='edit_equipment'),
+    # path('equipment/add/', views.add_equipment, name='add_equipment'),
+    # path('equipment/edit/<int:pk>/', views.edit_equipment, name='edit_equipment'),
+    path('equipment/delete/<int:pk>/', views.delete_equipment, name='delete_equipment'),
 ]
